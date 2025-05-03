@@ -197,17 +197,21 @@ class Game:
     def draw(self):
         # Game Loop - draw
         self.screen.blit(self.bg, (0, 0))
-        score_text = self.text_font.render("Abschüsse: " + str(self.score), True, WHITE)  # Score-Text rendern
-        score_rect = score_text.get_rect(topright=(MAXWIDTH, 100))  # Position des Score-Texts festlegen
-        self.screen.blit(score_text, score_rect)  # Score-Text auf dem Bildschirm anzeigen
+        
+        # draw "Score" - text
+        score_text = self.text_font.render("Score: " + str(self.score), True, WHITE)
+        score_rect = score_text.get_rect(topright=(MAXWIDTH, 100))
+        self.screen.blit(score_text, score_rect)
 
-        round_text = self.round_font.render("Runde: " + str(self.round_counter), True, WHITE)
+        # draw "Round" - text
+        round_text = self.round_font.render("Round: " + str(self.round_counter), True, WHITE)
         round_rect = round_text.get_rect(topright=(MAXWIDTH, 130))
-        self.screen.blit(round_text, round_rect)  # print current round
+        self.screen.blit(round_text, round_rect)
 
+        # draw "Highscore" - text
         highscore_text = self.highscore_font.render("Highscore: " + str(self.highscore), True, WHITE)
         highscore_rect = highscore_text.get_rect(topright=(MAXWIDTH, 160))
-        self.screen.blit(highscore_text, highscore_rect)  # print current round
+        self.screen.blit(highscore_text, highscore_rect)
 
         for i in range(self.lives):
             x = 100 + i * 100
@@ -215,22 +219,24 @@ class Game:
 
         if self.lives <= 0:
             self.game_over = True
-            if self.score > self.highscore:  # Überprüfung auf neuen Highscore
+            if self.score > self.highscore:  # check if new highscore is set
                 self.highscore = self.score
-                self.save_highscore()  # Speichern des neuen Highscores
-            game_over_text = self.game_over_font.render("Game Over", True, WHITE)  # "Game Over" -Text rendern
-            game_over_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))  # Position des "Game Over" -Texts festlegen
-            self.screen.blit(game_over_text, game_over_rect)  # "Game Over" -Text auf dem Bildschirm anzeigen
+                self.save_highscore()  # save new highscore
 
-            restart_text = self.restart_font.render("Restart", True, WHITE)  # "Restart" -Text rendern
-            restart_rect = restart_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Position des "Restart" -Texts festlegen
-            self.screen.blit(restart_text, restart_rect)  # "Restart" -Text auf dem Bildschirm anzeigen
+            # draw "Game Over" - text
+            game_over_text = self.game_over_font.render("Game Over", True, WHITE)
+            game_over_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+            self.screen.blit(game_over_text, game_over_rect)
+
+            # draw "Restart" - text
+            restart_text = self.restart_font.render("Restart", True, WHITE)
+            restart_rect = restart_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+            self.screen.blit(restart_text, restart_rect)
 
             mouse_pos = pygame.mouse.get_pos()
             if restart_rect.collidepoint(mouse_pos):
-                pygame.draw.rect(self.screen, GREEN, restart_rect, border_radius=10)  # Hervorhebung des "Restart" -Buttons bei Mausüberquerung
-                for event in pygame.event.get():
-                    if event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.draw.rect(self.screen, GREEN, restart_rect, border_radius=10)  # highlight the "Restart"-button when hovering over it
+                if event.type == pygame.MOUSEBUTTONDOWN:
                         self.game_over = False
                         self.lives = 3
                         self.objects.clear()
@@ -246,7 +252,7 @@ class Game:
                 self.draw_health_bar(i)
             self.screen.blit(i.image, i.rect)
 
-        self.screen.blit(self.custom_cursor, self.custom_cursor_rect) # Mauszeigerbild zeichnen
+        self.screen.blit(self.custom_cursor, self.custom_cursor_rect) # draw custom cursor
         pygame.display.update()
 
     def draw_health_bar(self, object):
@@ -254,22 +260,24 @@ class Game:
         health_bar_height = 10
         health_bar_x = object.rect.x
         health_bar_y = object.rect.y - health_bar_height - 5
-        pygame.draw.rect(self.screen, GREEN, (health_bar_x, health_bar_y, health_bar_width, health_bar_height))
-        remaining_health = max(0, (object.lives / object.max_lives) * health_bar_width)
-        pygame.draw.rect(self.screen, RED, (health_bar_x, health_bar_y, remaining_health, health_bar_height))
+        pygame.draw.rect(self.screen, GREEN, (health_bar_x, health_bar_y, health_bar_width, health_bar_height)) # draw healthbar
+        remaining_health = max(0, (object.lives / object.max_lives) * health_bar_width) # get remaining health
+        pygame.draw.rect(self.screen, RED, (health_bar_x, health_bar_y, remaining_health, health_bar_height)) # draw remaining health
         return
 
     def update_custom_cursor(self):
-        # Aktualisierung der Position des benutzerdefinierten Mauszeigers basierend auf der Mausposition
+        # Updating the current position of the custom cursor
         mouse_pos = pygame.mouse.get_pos()
         self.custom_cursor_rect.center = mouse_pos
         return
     
     def save_highscore(self):
+        # write highscore in file
         with open(SCORE_FILE, "w") as file:
             file.write(str(self.highscore))
 
     def load_highscore(self):
+        # load highscore from file
         try:
             with open(SCORE_FILE, "r") as file:
                 highscore = int(file.read())
