@@ -104,9 +104,12 @@ class Game:
         self.game_over = False
         self.text_font = pygame.font.Font(None, 36)
         self.round_font = pygame.font.Font(None, 36)
-        self.highscore_font = pygame.font.Font(None, 36)  # Schriftart und -größe für "Round" festlegen
-        self.game_over_font = pygame.font.Font(None, 72)  # Schriftart und -größe für "Game Over" festlegen
-        self.restart_font = pygame.font.Font(None, 36)  # Schriftart und -größe für "Restart" festlegen
+
+        # set text fonts and sizes
+        self.highscore_font = pygame.font.Font(None, 36)
+        self.game_over_font = pygame.font.Font(None, 72)
+        self.restart_font = pygame.font.Font(None, 36)
+
         self.objects = []
         self.highscore = self.load_highscore()
         self.new()
@@ -160,8 +163,8 @@ class Game:
             self.events()
             self.update()
             self.draw()
-            pygame.mouse.set_visible(False)  # Mauszeiger ausblenden
-            self.update_custom_cursor()  # Benutzerdefinierten Mauszeiger aktualisieren
+            pygame.mouse.set_visible(False)  # disable cursor
+            self.update_custom_cursor()  # update custom cursor
 
 
     def events(self):
